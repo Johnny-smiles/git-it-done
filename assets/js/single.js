@@ -2,6 +2,24 @@
 var issueContainerEl = document.querySelector("#issues-container");
 // declaring dom refrence to issues more than 30 alert
 var limitWarningEl = document.querySelector("#limit-warning");
+// var to hold string splits.
+var getRepoName = function() {
+    //location object and split method to extract the repo name
+    var queryString = document.location.search;
+    var repoName = queryString.split("=")[1];
+    //check if valid
+    if(repoName){
+        // display repo name on page
+        repoNameEl.textContent = repoName;
+        getRepoIssues(repoName);
+    } else {
+        // if no repo was given, redirect to the homepage
+        document.location.replace("./index.html");
+    }
+};
+// passing repoName into html 
+var repoNameEl = document.querySelector("#repo-name");
+
 // limit warning function
 var displayWarning = function(repo) {
     // add text to warning container
@@ -15,7 +33,7 @@ var displayWarning = function(repo) {
     // append to warning container
     limitWarningEl.appendChild(linkEl);
 };
-
+// make a get request to url
 var getRepoIssues = function(repo){
    var apiUrl = "https://api.github.com/repos/" + repo + "/issues?direction=asc";
     fetch(apiUrl).then(function(response) {
@@ -30,9 +48,9 @@ var getRepoIssues = function(repo){
                     displayWarning(repo);
                 }
             });
-        }
-        else{
-            alert("There was a problem with your request!");
+        } else {
+            // if not successful, redirect to homepage
+            document.location.replace("./index.html");
         }
     });
 }
@@ -74,4 +92,4 @@ var displayIssues = function(issues) {
         issueContainerEl.appendChild(issueEl);
     }
 }
-getRepoIssues("facebook/react")
+getRepoName();
